@@ -12,13 +12,18 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
 
     private Vector2 moveInput;
+
     private Animator animator;
+
     private float timeForBuff = 0f;
+
+    private bool movementEnabled = true;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
         inputActions = new InputSystem_Actions();
     }
 
@@ -37,29 +42,61 @@ public class PlayerController : MonoBehaviour
 
         inputActions.Disable();
     }
+
     public void SetTimeForBuff(float t)
     {
         timeForBuff = t;
     }
+
+    public void SetMovementEnabled(bool enabled)
+    {
+        movementEnabled = enabled;
+
+        if (!enabled)
+        {
+            moveInput = Vector2.zero;
+
+            if (animator != null)
+            {
+                animator.Play("Idle");
+            }
+        }
+    }
+
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
+        if (!movementEnabled)
+            return;
+
         moveInput = context.ReadValue<Vector2>();
-        animator.Play("Run");
+
+        if (moveInput.sqrMagnitude > 0f)
+        {
+            animator.Play("Run");
+        }
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)
     {
+        if (!movementEnabled)
+            return;
+
         moveInput = Vector2.zero;
+
         animator.Play("Idle");
     }
 
     private void FixedUpdate()
     {
+        if (!movementEnabled)
+            return;
+
         if (timeForBuff > 0f)
         {
             timeForBuff -= Time.fixedDeltaTime;
             return;
         }
+
         Move();
     }
 

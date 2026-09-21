@@ -3,7 +3,7 @@
 public class MouseCanShoot : MouseAI
 {
     [Header("Attack")]
-    [SerializeField] private Transform gunTransform;
+    [SerializeField] private Transform gunTransform, shootPos;
     [SerializeField] private ProjectileAttack projectileAttack;
     [SerializeField] private MouseAttackData attackData;
 
@@ -144,7 +144,8 @@ public class MouseCanShoot : MouseAI
         {
             projectileAttack.ShootProjectile(
                 attackData.projectileIndex,
-                direction
+                direction,
+                shootPos
             );
 
             fireTimer = 0f;
@@ -188,7 +189,8 @@ public class MouseCanShoot : MouseAI
         {
             projectileAttack.ActiveProjectHold(
                 attackData.projectileIndex,
-                direction
+                direction,
+                shootPos
             );
 
             isHolding = true;
@@ -308,7 +310,8 @@ public class MouseCanShoot : MouseAI
 
         projectileAttack.ShootProjectile(
             attackData.projectileIndex,
-            direction
+            direction,
+            shootPos
         );
     }
 

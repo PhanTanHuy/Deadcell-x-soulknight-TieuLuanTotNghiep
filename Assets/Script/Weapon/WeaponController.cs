@@ -8,6 +8,7 @@ public class WeaponController : MonoBehaviour
     [SerializeField] private float fireInterval = 1f;
     [SerializeField] private ProjectileAttack projectileAttack;
     [SerializeField] private Transform spriteWeapon, spritePlayer;
+    [SerializeField] private Transform shootPos;
     private InputSystem_Actions inputActions;
     private Camera mainCamera;
 
@@ -130,7 +131,7 @@ public class WeaponController : MonoBehaviour
     private void OnAttackPerformed(InputAction.CallbackContext context)
     {
         isAttacking = true;
-        if (fireHold && !projectileAttack.IsProjectileActive) projectileAttack.ActiveProjectHold(0, directionToMouse);
+        if (fireHold && !projectileAttack.IsProjectileActive) projectileAttack.ActiveProjectHold(0, directionToMouse, shootPos);
 
         // Bắn ngay viên đầu tiên
         //Fire();
@@ -162,7 +163,7 @@ public class WeaponController : MonoBehaviour
 
     private void Fire()
     {
-        projectileAttack.ShootProjectile(0, directionToMouse);
+        projectileAttack.ShootProjectile(0, directionToMouse, shootPos);
         PlayRecoil();
     }
 

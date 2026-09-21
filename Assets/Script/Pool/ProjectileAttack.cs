@@ -5,7 +5,7 @@ using UnityEngine;
 public class ProjectileAttack : MonoBehaviour
 {
     public List<GameObject> projectilePrefabs = new();
-    public Transform shootPos;
+    //public Transform shootPos;
     public Transform attacker;
     public SpriteRenderer spriteWeapon;
     private string currnetNameProjectile;
@@ -81,7 +81,7 @@ public class ProjectileAttack : MonoBehaviour
         projectilePrefabs[poolIndex] = newProjectilePrefab;
         currnetNameProjectile = projectilePools[0].Peek().gameObject.name;
     }
-    public void ActiveProjectHold(int projectileIndex, Vector2 direction)
+    public void ActiveProjectHold(int projectileIndex, Vector2 direction, Transform shootPos)
     {
         if (projectileIndex < 0 || projectileIndex >= projectilePools.Count)
             return;
@@ -111,7 +111,7 @@ public class ProjectileAttack : MonoBehaviour
         pool.Enqueue(projectileHold.GetComponent<ProjectileMovement>());
         projectileHold = null;
     }
-    public void ShootProjectile(int projectileIndex, Vector2 direction)
+    public void ShootProjectile(int projectileIndex, Vector2 direction, Transform shootPos)
     {
         if (projectileIndex < 0 ||
             projectileIndex >= projectilePools.Count)

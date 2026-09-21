@@ -116,7 +116,7 @@ Transform:
   m_GameObject: {fileID: 1545723882014459048}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.44, y: 0.032999992, z: 0}
+  m_LocalPosition: {x: 2.51, y: 0.032999992, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -379,11 +379,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileAttack
   projectilePrefabs:
   - {fileID: 2523554136486422116, guid: 3b5b9ba420e310f428d6dab2126a2cff, type: 3}
-  poolSize: 40
-  shootPos: {fileID: 1763836011993292133}
   attacker: {fileID: 2193350933083609483}
   spriteWeapon: {fileID: 0}
   damageAmount: 1
+  bulletsPerShot: 1
+  bulletAngleStep: 10
 --- !u!114 &3431247842645659731
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -400,6 +400,7 @@ MonoBehaviour:
   movementData: {fileID: 11400000, guid: f8d585d24736ca94e8311bf9724e5036, type: 2}
   chaseData: {fileID: 11400000, guid: e62a9867b5dc60645b10e140f9395d5d, type: 2}
   gunTransform: {fileID: 8091657611616117003}
+  shootPos: {fileID: 1763836011993292133}
   projectileAttack: {fileID: 7741493337166668349}
   attackData: {fileID: 11400000, guid: a3a020836c6268b4d8eda37756c828da, type: 2}
 --- !u!1 &4957422302347138743
