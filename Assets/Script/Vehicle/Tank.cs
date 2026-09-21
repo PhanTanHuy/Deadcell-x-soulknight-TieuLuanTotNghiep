@@ -49,12 +49,12 @@ public class Tank : Vehicle
     {
         base.EnterVehicle(interactor);
         interactor.GetComponentInChildren<WeaponController>().enabled = false;
-        GetComponent<WeaponController>().enabled = true;
+        GetComponentInChildren<WeaponController>().enabled = true;
     }
     protected override void ExitVehicle()
     {
-        base.ExitVehicle();
         currentDriver.GetComponentInChildren<WeaponController>().enabled = true;
-        GetComponent<WeaponController>().enabled = false;
+        base.ExitVehicle();
+        GetComponentInChildren<WeaponController>().enabled = false;
     }
 }

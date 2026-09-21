@@ -28,7 +28,7 @@ public class ProjectileAttack : MonoBehaviour
         {
             Queue<ProjectileMovement> pool = new();
 
-            for (int j = 0; j < 10; j++)
+            for (int j = 0; j < 30; j++)
             {
                 GameObject obj = Instantiate(projectilePrefabs[i]);
                 obj.SetActive(false);
@@ -111,17 +111,17 @@ public class ProjectileAttack : MonoBehaviour
         pool.Enqueue(projectileHold.GetComponent<ProjectileMovement>());
         projectileHold = null;
     }
-    public void ShootProjectile(int projectileIndex, Vector2 direction, Transform shootPos)
+    public bool ShootProjectile(int projectileIndex, Vector2 direction, Transform shootPos)
     {
         if (projectileIndex < 0 ||
             projectileIndex >= projectilePools.Count)
-            return;
+            return false;
 
         Queue<ProjectileMovement> pool =
             projectilePools[projectileIndex];
 
         if (pool.Count == 0)
-            return;
+            return false;
 
         int bulletCount = Mathf.Max(1, bulletsPerShot);
 
@@ -156,6 +156,7 @@ public class ProjectileAttack : MonoBehaviour
 
             proj.gameObject.SetActive(true);
         }
+        return true;
     }
     private Vector2 RotateDirection(
     Vector2 direction,

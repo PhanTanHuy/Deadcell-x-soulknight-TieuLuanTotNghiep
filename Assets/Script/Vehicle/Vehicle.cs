@@ -6,13 +6,15 @@ public abstract class Vehicle : MonoBehaviour, IInteract
 {
     [Header("Vehicle")]
     [SerializeField] protected float moveSpeed = 5f;
+    [SerializeField] protected Transform driverSeat;
+    [SerializeField] protected Transform exitPoint;
 
     protected Rigidbody2D rb;
 
+    private Rigidbody2D driverRb;
     private InputSystem_Actions inputActions;
 
     protected Vector2 moveInput;
-
     protected Transform currentDriver;
 
     private bool isDriving;
@@ -57,19 +59,38 @@ public abstract class Vehicle : MonoBehaviour, IInteract
         if (interactor == null)
             return;
 
-        PlayerController player = interactor.GetComponent<PlayerController>();
+        PlayerController player =
+            interactor.GetComponent<PlayerController>();
 
         if (player == null)
+            return;
+
+        driverRb = interactor.GetComponent<Rigidbody2D>();
+
+        if (driverRb == null)
             return;
 
         currentDriver = interactor;
         isDriving = true;
 
-        // Tắt điều khiển Player.
-        player.SetMovementEnabled(false);
+        // Tắt PlayerController.
+        player.enabled = false;
 
-        // Đưa Player vào vị trí xe.
-        interactor.SetParent(this.transform);
+        // Tắt physics của Player.
+        driverRb.bodyType = RigidbodyType2D.Kinematic;
+
+        // Cho Player làm con của xe.
+        currentDriver.SetParent(transform);
+
+        // Đặt Player vào ghế.
+        if (driverSeat != null)
+        {
+            currentDriver.position = driverSeat.position;
+        }
+        else
+        {
+            currentDriver.localPosition = Vector3.zero;
+        }
 
         Debug.Log("Player entered vehicle: " + gameObject.name);
     }
@@ -78,21 +99,42 @@ public abstract class Vehicle : MonoBehaviour, IInteract
     {
         if (currentDriver == null)
             return;
-
         PlayerController player =
             currentDriver.GetComponent<PlayerController>();
 
+        // Trước tiên lấy vị trí xuống xe.
+        Vector3 exitPosition;
+
+        if (exitPoint != null)
+        {
+            exitPosition = exitPoint.position;
+        }
+        else
+        {
+            exitPosition = transform.position + Vector3.right;
+        }
+
+        // Bỏ Player khỏi xe.
+        currentDriver.SetParent(null);
+
+        // Đặt vị trí xuống xe.
+        currentDriver.position = exitPosition;
+
+        // Bật lại physics.
+        if (driverRb != null)
+        {
+            driverRb.bodyType = RigidbodyType2D.Dynamic;
+        }
+
+        // Bật lại PlayerController.
         if (player != null)
         {
-            player.SetMovementEnabled(true);
-
-            // Cho Player đứng cạnh xe khi xuống.
-            currentDriver.SetParent(null);
-            currentDriver.position =
-                transform.position + Vector3.right;
+            player.enabled = true;
         }
 
         currentDriver = null;
+        driverRb = null;
+
         isDriving = false;
         moveInput = Vector2.zero;
 

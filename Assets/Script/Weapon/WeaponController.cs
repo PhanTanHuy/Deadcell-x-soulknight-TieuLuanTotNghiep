@@ -61,6 +61,8 @@ public class WeaponController : MonoBehaviour
     }
     private void RotatePlayerToWeapon()
     {
+        if (spritePlayer == null)
+            return;
         spritePlayer.localScale =
             directionToMouse.x < 0f
                 ? FlipScale
@@ -163,8 +165,8 @@ public class WeaponController : MonoBehaviour
 
     private void Fire()
     {
-        projectileAttack.ShootProjectile(0, directionToMouse, shootPos);
-        PlayRecoil();
+        
+        if (projectileAttack.ShootProjectile(0, directionToMouse, shootPos)) PlayRecoil();
     }
 
     private void RotateWeaponTowardsLook()
