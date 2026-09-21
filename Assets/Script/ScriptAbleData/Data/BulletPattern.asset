@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9622214d202104942952c527b7d9d0b1, type: 3}
+  m_Name: BulletPattern
+  m_EditorClassIdentifier: Assembly-CSharp::BulletPatternData
+  patternType: 0
+  fireInterval: 5
+  bulletCount: 10
+  angleStep: 30
+  startAngle: 0
