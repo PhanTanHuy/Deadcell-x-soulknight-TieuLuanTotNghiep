@@ -3,7 +3,6 @@ using UnityEngine;
 public class BulletFollow : ProjectileMovement
 {
     [Header("Homing")]
-    [SerializeField] private float searchRadius = 5f;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float turnSpeed = 5f;
 
@@ -17,13 +16,13 @@ public class BulletFollow : ProjectileMovement
     {
         Collider2D hit = Physics2D.OverlapCircle(
             transform.position,
-            searchRadius,
+            25,
             enemyLayer
         );
 
         if (hit == null)
             return null;
-        PoolObject.instance.SpawnObject(PoolObject.VFXType.IdentityTarget, hit.transform.position, default, 2f);
+        PoolObject.instance.SpawnObject(PoolObject.VFXType.IdentityTarget, hit.transform, default, 2f, true);
         return hit.transform;
     }
 
@@ -31,11 +30,16 @@ public class BulletFollow : ProjectileMovement
     {
         if (target != null && target.gameObject.activeInHierarchy)
         {
-            Vector2 targetDirection = ((Vector2)target.position - (Vector2)transform.position).normalized;
+            Vector2 targetDirection = ((Vector2)target.position - (Vector2)transform.position);
 
-            MoveDirection = Vector2.Lerp(MoveDirection, targetDirection, turnSpeed * Time.fixedDeltaTime).normalized;
+            MoveDirection = Vector2.Lerp(MoveDirection, targetDirection.normalized, turnSpeed * Time.fixedDeltaTime).normalized;
             RotateTransformToDirection();
-
+            if (targetDirection.magnitude < 0.5f)
+            {
+                HitBox hitBox = target.GetComponent<HitBox>();
+                hitBox.GetDame(damageAmountPlus + projectileAttack.DamageAmount);
+                gameObject.SetActive(false);
+            }
         }
 
         base.FixedUpdate();

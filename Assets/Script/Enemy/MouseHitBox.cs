@@ -16,7 +16,7 @@ public class MouseHitBox : HitBox
     {
         base.GetDame(damageAmount);
 
-        GameObject t = PoolObject.instance.SpawnObject(PoolObject.VFXType.DameText, transform.position, Vector2.one, 1f);
+        GameObject t = PoolObject.instance.SpawnObject(PoolObject.VFXType.DameText, transform, Vector2.one, 1f, true);
         if (t.transform.GetChild(0).TryGetComponent(out TextMeshProUGUI dameText))
         {
             dameText.text = damageAmount.ToString();

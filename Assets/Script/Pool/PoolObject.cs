@@ -57,7 +57,7 @@ public class PoolObject : MonoBehaviour
         }
     }
 
-    public GameObject SpawnObject(VFXType type, Vector2 position, Vector2 direction = default, float duration = 0.5f)
+    public GameObject SpawnObject(VFXType type, Transform target, Vector2 direction = default, float duration = 0.5f, bool followTarget = false)
     {
         if (!poolDictionary.ContainsKey(type))
         {
@@ -67,9 +67,9 @@ public class PoolObject : MonoBehaviour
 
         GameObject obj = poolDictionary[type].Dequeue();
 
-        obj.transform.position = position;
+        obj.transform.position = target.position;
         obj.transform.localScale = new Vector3(obj.transform.localScale.x * direction.x > 0 ? 1 : -1, obj.transform.localScale.y);
-
+        if (followTarget) obj.transform.SetParent(target);
         obj.SetActive(true);
         if (obj.TryGetComponent(out ParticleSystem particleSystem))
         {
@@ -124,6 +124,7 @@ public class PoolObject : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         obj.SetActive(false);
+        if (obj.transform.parent != null) obj.transform.parent = null;
     }
     public void ReturnToPool(GameObject obj, VFXType type)
     {

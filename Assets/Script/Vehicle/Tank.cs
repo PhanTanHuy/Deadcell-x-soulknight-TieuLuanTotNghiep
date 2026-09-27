@@ -80,9 +80,7 @@ public class Tank : Vehicle
 
     public override void ExitVehicle()
     {
-        currentDriver
-            .GetComponentInChildren<WeaponController>()
-            .enabled = true;
+        if (currentDriver != null) currentDriver.GetComponentInChildren<WeaponController>().enabled = true;
 
         base.ExitVehicle();
 
