@@ -29,24 +29,21 @@ public class Tank : Vehicle
             directionLerpSpeed * Time.fixedDeltaTime
         );
 
-        // Nếu hướng quá nhỏ thì dừng.
+        // Khi gần bằng 0 thì dừng hẳn.
         if (tankDirection.sqrMagnitude <= 0.001f)
         {
             tankDirection = Vector2.zero;
             return;
         }
 
-        // Chuẩn hóa lại để tốc độ luôn ổn định.
-        tankDirection.Normalize();
-
-        // Di chuyển theo hướng của tank.
+        // Di chuyển theo tankDirection.
         Vector2 movement =
             tankDirection * (moveSpeed * Time.fixedDeltaTime);
 
         rb.MovePosition(rb.position + movement);
-
-        // Xoay thân tank theo hướng hiện tại.
-        RotateTank(tankDirection);
+        Debug.Log(movement);
+        // Xoay theo hướng đang di chuyển.
+        RotateTank(tankDirection.normalized);
     }
 
     private void RotateTank(Vector2 direction)

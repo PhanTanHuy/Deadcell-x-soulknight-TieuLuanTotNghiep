@@ -60,6 +60,7 @@ public abstract class Vehicle : MonoBehaviour, IInteract
         if (hitBox.CanNotLifeAnymore()) return;
         if (interactor == null)
             return;
+        interactor.SetParent(transform);
 
         PlayerController player =
             interactor.GetComponent<PlayerController>();
@@ -84,7 +85,6 @@ public abstract class Vehicle : MonoBehaviour, IInteract
         // Tắt physics của Player.
         driverRb.bodyType = RigidbodyType2D.Kinematic;
         // Cho Player làm con của xe.
-        currentDriver.SetParent(transform);
 
         // Đặt Player vào ghế.
         if (driverSeat != null)
@@ -97,6 +97,7 @@ public abstract class Vehicle : MonoBehaviour, IInteract
         }
 
         Debug.Log("Player entered vehicle: " + gameObject.name);
+        rb.linearVelocity = Vector3.zero;
     }
 
     public virtual void ExitVehicle()
@@ -144,6 +145,7 @@ public abstract class Vehicle : MonoBehaviour, IInteract
 
         isDriving = false;
         moveInput = Vector2.zero;
+        rb.linearVelocity = Vector3.zero;
 
         Debug.Log("Player exited vehicle: " + gameObject.name);
     }

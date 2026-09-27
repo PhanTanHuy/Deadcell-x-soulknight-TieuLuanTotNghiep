@@ -28,7 +28,7 @@ public class BoxInteract : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        if (player == other.transform)
+        if (player == other.transform && player.parent != transform.parent)
         {
             player = null;
             inputActions.Player.Interact.performed -= OnInteractPerformed;
