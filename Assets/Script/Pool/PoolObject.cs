@@ -9,7 +9,7 @@ public class PoolObject : MonoBehaviour
     {
         None,
         Blood,
-        HitSpark,
+        IdentityTarget,
         ParryEffect,
         Dust,
         HealEffect,

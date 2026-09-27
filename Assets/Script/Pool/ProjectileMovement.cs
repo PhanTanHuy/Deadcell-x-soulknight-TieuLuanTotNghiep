@@ -17,8 +17,12 @@ public class ProjectileMovement : MonoBehaviour
 
     private MoveMode currentMode;
     private Vector2 moveDirection;
-    public Vector2 MoveDirection => moveDirection;
-    private Transform target;
+    public Vector2 MoveDirection
+    {
+        get => moveDirection;
+        set => moveDirection = value.normalized;
+    }
+    protected Transform target;
     protected Transform shootPos;
     [SerializeField] protected int damageAmountPlus = 1;
     [HideInInspector] public ProjectileAttack projectileAttack;

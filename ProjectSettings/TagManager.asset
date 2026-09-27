@@ -7,7 +7,7 @@ TagManager:
   - AttackBox
   - Item
   - Enemy
-  - BulletEnemy
+  - Vehicle
   layers:
   - Default
   - TransparentFX
@@ -18,8 +18,8 @@ TagManager:
   - Enemy
   - Map
   - MinimapRender
-  - 
-  - 
+  - Interact
+  - Player
   - 
   - 
   - 

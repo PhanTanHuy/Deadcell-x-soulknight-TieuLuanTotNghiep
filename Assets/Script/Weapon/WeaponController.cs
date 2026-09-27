@@ -4,48 +4,61 @@ using System.Collections;
 
 public class WeaponController : MonoBehaviour
 {
+    public enum WeaponRotationMode
+    {
+        SharedRotation,
+        IndividualRotation
+    }
+
+    [Header("Weapon")]
     [SerializeField] private Transform weaponPos;
-    [SerializeField] private float fireInterval = 1f;
+
+    [SerializeField] private Transform[] spriteWeapons;
+
+    [SerializeField] private Transform[] shootPos;
+
     [SerializeField] private ProjectileAttack projectileAttack;
-    [SerializeField] private Transform spriteWeapon, spritePlayer;
-    [SerializeField] private Transform shootPos;
+
+    [SerializeField] private float fireInterval = 1f;
+
+    [SerializeField]
+    private WeaponRotationMode rotationMode =
+        WeaponRotationMode.SharedRotation;
+
+    [Header("Player")]
+    [SerializeField] private Transform spritePlayer;
+
+    [Header("Recoil")]
+    [SerializeField] private float recoilDistance = 0.15f;
+
+    [SerializeField] private float recoilDuration = 0.2f;
+
     private InputSystem_Actions inputActions;
+
     private Camera mainCamera;
 
     private bool isAttacking;
-    private float fireTimer;
-    private Vector2 directionToMouse;
-    private bool fireHold = false;
-    private static readonly Vector3 NormalScale = Vector3.one;
-    private static readonly Vector3 FlipScale = new Vector3(-1f, 1f, 1f);
-    [SerializeField] private float recoilDistance = 0.15f;
-    [SerializeField] private float recoilDuration = 0.2f;
 
-    private Vector3 spriteOriginalLocalPosition;
-    private Coroutine recoilCoroutine;
+    private float fireTimer;
+
+    private Vector2 directionToMouse;
+
+    [SerializeField] private bool fireHold = false;
+
+    private static readonly Vector3 NormalScale = Vector3.one;
+
+    private static readonly Vector3 FlipScale =
+        new Vector3(-1f, 1f, 1f);
+
+    private Vector3[] spriteOriginalLocalPositions;
+
+    private Coroutine[] recoilCoroutines;
 
     private void Awake()
     {
         inputActions = new InputSystem_Actions();
-        spriteOriginalLocalPosition = spriteWeapon.localPosition;
-    }
 
-    private void OnEnable()
-    {
-        inputActions.Enable();
-
-        // Subscribe input events
-        inputActions.Player.Attack.performed += OnAttackPerformed;
-        inputActions.Player.Attack.canceled += OnAttackCanceled;
-    }
-
-    private void OnDisable()
-    {
-        // Unsubscribe input events
-        inputActions.Player.Attack.performed -= OnAttackPerformed;
-        inputActions.Player.Attack.canceled -= OnAttackCanceled;
-
-        inputActions.Disable();
+        InitializeWeapons();
     }
 
     private void Start()
@@ -53,52 +66,349 @@ public class WeaponController : MonoBehaviour
         mainCamera = Camera.main;
     }
 
+    private void OnEnable()
+    {
+        inputActions.Enable();
+
+        inputActions.Player.Attack.performed += OnAttackPerformed;
+        inputActions.Player.Attack.canceled += OnAttackCanceled;
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Player.Attack.performed -= OnAttackPerformed;
+        inputActions.Player.Attack.canceled -= OnAttackCanceled;
+
+        inputActions.Disable();
+        if (fireHold) DeactiveAllProjectileHolds();
+    }
+
+    private void InitializeWeapons()
+    {
+        int weaponCount = spriteWeapons != null
+            ? spriteWeapons.Length
+            : 0;
+
+        spriteOriginalLocalPositions =
+            new Vector3[weaponCount];
+
+        recoilCoroutines =
+            new Coroutine[weaponCount];
+
+        for (int i = 0; i < weaponCount; i++)
+        {
+            if (spriteWeapons[i] != null)
+            {
+                spriteOriginalLocalPositions[i] =
+                    spriteWeapons[i].localPosition;
+            }
+        }
+    }
+
     private void Update()
     {
-        RotateWeaponTowardsLook();
+        RotateWeaponsTowardsLook();
+
         RotatePlayerToWeapon();
+
         HandleFire();
     }
+
+    //========================================================
+    // ROTATION
+    //========================================================
+
+    private void RotateWeaponsTowardsLook()
+    {
+        if (weaponPos == null)
+            return;
+
+        if (mainCamera == null)
+            return;
+
+        Vector3 mousePosition =
+            Mouse.current.position.ReadValue();
+
+        mousePosition.z =
+            Mathf.Abs(mainCamera.transform.position.z);
+
+        Vector3 worldMousePosition =
+            mainCamera.ScreenToWorldPoint(mousePosition);
+
+        // Hướng từ weaponPos đến chuột.
+        directionToMouse =
+            worldMousePosition - weaponPos.position;
+
+        if (directionToMouse.sqrMagnitude <= 0.001f)
+            return;
+
+        float angle =
+            Mathf.Atan2(
+                directionToMouse.y,
+                directionToMouse.x
+            ) * Mathf.Rad2Deg - 90f;
+
+        Quaternion targetRotation =
+            Quaternion.AngleAxis(
+                angle,
+                Vector3.forward
+            );
+
+        if (rotationMode ==
+            WeaponRotationMode.SharedRotation)
+        {
+            RotateAllWeaponsTogether(targetRotation);
+        }
+        else
+        {
+            RotateWeaponsIndividually(
+                worldMousePosition
+            );
+        }
+    }
+
+    //========================================================
+    // MODE 1
+    // Tất cả súng xoay cùng nhau
+    //========================================================
+
+    private void RotateAllWeaponsTogether(
+        Quaternion targetRotation)
+    {
+        weaponPos.rotation = targetRotation;
+
+        for (int i = 0; i < spriteWeapons.Length; i++)
+        {
+            if (spriteWeapons[i] == null)
+                continue;
+
+            spriteWeapons[i].localScale =
+                directionToMouse.x < 0f
+                    ? FlipScale
+                    : NormalScale;
+        }
+    }
+
+    //========================================================
+    // MODE 2
+    // Mỗi súng tự hướng về chuột
+    //========================================================
+
+    private void RotateWeaponsIndividually(
+        Vector3 worldMousePosition)
+    {
+        for (int i = 0; i < spriteWeapons.Length; i++)
+        {
+            Transform weapon =
+                spriteWeapons[i];
+
+            if (weapon == null)
+                continue;
+
+            Vector3 direction =
+                worldMousePosition -
+                weapon.position;
+
+            if (direction.sqrMagnitude <= 0.001f)
+                continue;
+
+            float angle =
+                Mathf.Atan2(
+                    direction.y,
+                    direction.x
+                ) * Mathf.Rad2Deg - 90f;
+
+            weapon.rotation =
+                Quaternion.AngleAxis(
+                    angle,
+                    Vector3.forward
+                );
+
+            weapon.localScale =
+                direction.x < 0f
+                    ? FlipScale
+                    : NormalScale;
+        }
+    }
+
     private void RotatePlayerToWeapon()
     {
         if (spritePlayer == null)
             return;
+
         spritePlayer.localScale =
             directionToMouse.x < 0f
                 ? FlipScale
                 : NormalScale;
     }
-    private void PlayRecoil()
+
+    //========================================================
+    // FIRE
+    //========================================================
+
+    private void OnAttackPerformed(
+        InputAction.CallbackContext context)
     {
-        if (spriteWeapon == null)
-            return;
+        isAttacking = true;
 
-        if (recoilCoroutine != null)
+        if (fireHold &&
+            !projectileAttack.IsProjectileActive)
         {
-            StopCoroutine(recoilCoroutine);
+            ActiveAllProjectileHolds();
         }
-
-        recoilCoroutine = StartCoroutine(Recoil());
     }
 
-    private IEnumerator Recoil()
+    private void OnAttackCanceled(
+        InputAction.CallbackContext context)
     {
-        Vector3 startPosition = spriteOriginalLocalPosition;
+        isAttacking = false;
+
+        if (fireHold &&
+            projectileAttack.IsProjectileActive)
+        {
+            DeactiveAllProjectileHolds();
+        }
+    }
+
+    private void HandleFire()
+    {
+        fireTimer += Time.deltaTime;
+
+        if (!isAttacking)
+            return;
+
+        if (fireTimer >= fireInterval)
+        {
+            fireTimer = 0f;
+
+            if (!fireHold)
+            {
+                Fire();
+            }
+        }
+    }
+
+    private void Fire()
+    {
+        if (projectileAttack == null)
+            return;
+
+        int count =
+            Mathf.Min(
+                spriteWeapons.Length,
+                shootPos.Length
+            );
+
+        for (int i = 0; i < count; i++)
+        {
+            if (shootPos[i] == null)
+                continue;
+
+            bool fired =
+                projectileAttack.ShootProjectile(
+                    0,
+                    directionToMouse,
+                    shootPos[i]
+                );
+
+            if (fired)
+            {
+                PlayRecoil(i);
+            }
+        }
+    }
+
+    //========================================================
+    // HOLD PROJECTILE
+    //========================================================
+
+    private void ActiveAllProjectileHolds()
+    {
+        int count =
+            Mathf.Min(
+                spriteWeapons.Length,
+                shootPos.Length
+            );
+
+        for (int i = 0; i < count; i++)
+        {
+            if (shootPos[i] == null)
+                continue;
+
+            projectileAttack.ActiveProjectHold(
+                0,
+                directionToMouse,
+                shootPos[i]
+            );
+        }
+    }
+
+    private void DeactiveAllProjectileHolds()
+    {
+        int count =
+            Mathf.Min(
+                spriteWeapons.Length,
+                shootPos.Length
+            );
+
+        for (int i = 0; i < count; i++)
+        {
+            projectileAttack.DeactiveProjectHold(0);
+        }
+    }
+
+    //========================================================
+    // RECOIL
+    //========================================================
+
+    private void PlayRecoil(int index)
+    {
+        if (index < 0 ||
+            index >= spriteWeapons.Length)
+            return;
+
+        if (spriteWeapons[index] == null)
+            return;
+
+        if (recoilCoroutines[index] != null)
+        {
+            StopCoroutine(
+                recoilCoroutines[index]
+            );
+        }
+
+        recoilCoroutines[index] =
+            StartCoroutine(
+                Recoil(index)
+            );
+    }
+
+    private IEnumerator Recoil(int index)
+    {
+        Transform weapon =
+            spriteWeapons[index];
+
+        Vector3 startPosition =
+            spriteOriginalLocalPositions[index];
 
         Vector3 recoilPosition =
-            startPosition - Vector3.up * recoilDistance;
+            startPosition -
+            Vector3.up * recoilDistance;
 
-        float halfDuration = recoilDuration * 0.5f;
+        float halfDuration =
+            recoilDuration * 0.5f;
 
         float timer = 0f;
 
+        // Đi lùi.
         while (timer < halfDuration)
         {
             timer += Time.deltaTime;
 
-            float t = timer / halfDuration;
+            float t =
+                timer / halfDuration;
 
-            spriteWeapon.localPosition =
+            weapon.localPosition =
                 Vector3.Lerp(
                     startPosition,
                     recoilPosition,
@@ -110,13 +420,15 @@ public class WeaponController : MonoBehaviour
 
         timer = 0f;
 
+        // Trở lại.
         while (timer < halfDuration)
         {
             timer += Time.deltaTime;
 
-            float t = timer / halfDuration;
+            float t =
+                timer / halfDuration;
 
-            spriteWeapon.localPosition =
+            weapon.localPosition =
                 Vector3.Lerp(
                     recoilPosition,
                     startPosition,
@@ -126,92 +438,38 @@ public class WeaponController : MonoBehaviour
             yield return null;
         }
 
-        spriteWeapon.localPosition = startPosition;
+        weapon.localPosition =
+            startPosition;
 
-        recoilCoroutine = null;
-    }
-    private void OnAttackPerformed(InputAction.CallbackContext context)
-    {
-        isAttacking = true;
-        if (fireHold && !projectileAttack.IsProjectileActive) projectileAttack.ActiveProjectHold(0, directionToMouse, shootPos);
-
-        // Bắn ngay viên đầu tiên
-        //Fire();
-
-        // Reset timer
-        //fireTimer = 0f;
+        recoilCoroutines[index] = null;
     }
 
-    private void OnAttackCanceled(InputAction.CallbackContext context)
-    {
-        isAttacking = false;
-        //fireTimer = 0f;
-        if (fireHold && projectileAttack.IsProjectileActive) projectileAttack.DeactiveProjectHold(0);
-    }
+    //========================================================
+    // PUBLIC
+    //========================================================
 
-    private void HandleFire()
-    {
-        fireTimer += Time.deltaTime;
-
-        if (!isAttacking)
-            return;
-        if (fireTimer >= fireInterval)
-        {
-            fireTimer = 0f;
-
-            if (!fireHold) Fire();
-        }
-    }
-
-    private void Fire()
-    {
-        
-        if (projectileAttack.ShootProjectile(0, directionToMouse, shootPos)) PlayRecoil();
-    }
-
-    private void RotateWeaponTowardsLook()
-    {
-        if (weaponPos == null)
-            return;
-
-        if (mainCamera == null)
-            return;
-
-        Vector3 mousePosition = Mouse.current.position.ReadValue();
-
-        mousePosition.z = Mathf.Abs(
-            mainCamera.transform.position.z
-        );
-
-        Vector3 worldMousePosition =
-            mainCamera.ScreenToWorldPoint(mousePosition);
-
-        directionToMouse =
-            worldMousePosition - weaponPos.position;
-
-        float angle =
-            Mathf.Atan2(directionToMouse.y, directionToMouse.x) * Mathf.Rad2Deg - 90f;
-        weaponPos.rotation =
-            Quaternion.AngleAxis(angle, Vector3.forward);
-
-        spriteWeapon.localScale =
-            directionToMouse.x < 0f
-                ? FlipScale
-                : NormalScale;
-    }
     public void IncreaseShootSpeed(float percent)
     {
         if (percent <= 0f)
             return;
 
-        fireInterval /= (1f + percent / 100f);
+        fireInterval /=
+            1f + percent / 100f;
     }
+
     public void ChangeShootSpeed(float time)
     {
         fireInterval = time;
     }
-    public void ChangeHoldShoot(bool t)
+
+    public void ChangeHoldShoot(bool value)
     {
-        fireHold = t;
+        fireHold = value;
+    }
+
+    public void ChangeRotationMode(
+        WeaponRotationMode mode)
+    {
+        rotationMode = mode;
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa30f9843d661c54c9c4b3b2347c20c7, type: 3}
   m_Name: NormalShoot
   m_EditorClassIdentifier: Assembly-CSharp::MouseAttackData
-  attackType: 1
+  attackType: 0
   projectileIndex: 0
   fireCooldown: 4
   aimThreshold: 50

@@ -8,7 +8,6 @@ public abstract class Vehicle : MonoBehaviour, IInteract
     [SerializeField] protected float moveSpeed = 5f;
     [SerializeField] protected Transform driverSeat;
     [SerializeField] protected Transform exitPoint;
-
     protected Rigidbody2D rb;
 
     private Rigidbody2D driverRb;
@@ -16,7 +15,7 @@ public abstract class Vehicle : MonoBehaviour, IInteract
 
     protected Vector2 moveInput;
     protected Transform currentDriver;
-
+    private HitBox hitBox;
     private bool isDriving;
 
     protected virtual void Awake()
@@ -24,6 +23,8 @@ public abstract class Vehicle : MonoBehaviour, IInteract
         rb = GetComponent<Rigidbody2D>();
 
         inputActions = new InputSystem_Actions();
+        hitBox = GetComponent<HitBox>();
+        hitBox.enabled = false;
     }
 
     protected virtual void OnEnable()
@@ -56,6 +57,7 @@ public abstract class Vehicle : MonoBehaviour, IInteract
 
     protected virtual void EnterVehicle(Transform interactor)
     {
+        if (hitBox.CanNotLifeAnymore()) return;
         if (interactor == null)
             return;
 
@@ -75,10 +77,12 @@ public abstract class Vehicle : MonoBehaviour, IInteract
 
         // Tắt PlayerController.
         player.enabled = false;
+        player.GetComponent<HitBox>().enabled = false;
+        player.GetComponent<Collider2D>().enabled = false;
+        hitBox.enabled = true;
 
         // Tắt physics của Player.
         driverRb.bodyType = RigidbodyType2D.Kinematic;
-
         // Cho Player làm con của xe.
         currentDriver.SetParent(transform);
 
@@ -95,7 +99,7 @@ public abstract class Vehicle : MonoBehaviour, IInteract
         Debug.Log("Player entered vehicle: " + gameObject.name);
     }
 
-    protected virtual void ExitVehicle()
+    public virtual void ExitVehicle()
     {
         if (currentDriver == null)
             return;
@@ -130,7 +134,10 @@ public abstract class Vehicle : MonoBehaviour, IInteract
         if (player != null)
         {
             player.enabled = true;
+            player.GetComponent<HitBox>().enabled = true;
+            player.GetComponent<Collider2D>().enabled = true;
         }
+        hitBox.enabled = false;
 
         currentDriver = null;
         driverRb = null;

@@ -7,28 +7,46 @@ public class Tank : Vehicle
 
     [SerializeField] private float rotationSpeed = 180f;
 
+    [Header("Movement")]
+    [SerializeField] private float directionLerpSpeed = 5f;
+
+    private Vector2 tankDirection;
+
     protected override void Move()
     {
-        Vector2 direction = moveInput;
+        Vector2 inputDirection = moveInput;
 
         // Không cho đi chéo nhanh hơn.
-        if (direction.sqrMagnitude > 1f)
+        if (inputDirection.sqrMagnitude > 1f)
         {
-            direction.Normalize();
+            inputDirection.Normalize();
         }
 
-        // Không có input thì không di chuyển / không xoay.
-        if (direction.sqrMagnitude <= 0.001f)
-            return;
+        // Lerp hướng tank theo input.
+        tankDirection = Vector2.Lerp(
+            tankDirection,
+            inputDirection,
+            directionLerpSpeed * Time.fixedDeltaTime
+        );
 
-        // Di chuyển tank.
+        // Nếu hướng quá nhỏ thì dừng.
+        if (tankDirection.sqrMagnitude <= 0.001f)
+        {
+            tankDirection = Vector2.zero;
+            return;
+        }
+
+        // Chuẩn hóa lại để tốc độ luôn ổn định.
+        tankDirection.Normalize();
+
+        // Di chuyển theo hướng của tank.
         Vector2 movement =
-            direction * (moveSpeed * Time.fixedDeltaTime);
+            tankDirection * (moveSpeed * Time.fixedDeltaTime);
 
         rb.MovePosition(rb.position + movement);
 
-        // Xoay thân tank theo hướng di chuyển.
-        RotateTank(direction);
+        // Xoay thân tank theo hướng hiện tại.
+        RotateTank(tankDirection);
     }
 
     private void RotateTank(Vector2 direction)
@@ -45,16 +63,32 @@ public class Tank : Vehicle
             rotationSpeed * Time.fixedDeltaTime
         );
     }
+
     protected override void EnterVehicle(Transform interactor)
     {
         base.EnterVehicle(interactor);
-        interactor.GetComponentInChildren<WeaponController>().enabled = false;
-        GetComponentInChildren<WeaponController>().enabled = true;
+
+        foreach (var weaponController in GetComponentsInChildren<WeaponController>())
+        {
+            weaponController.enabled = true;
+        }
+
+        interactor
+            .GetComponentInChildren<WeaponController>()
+            .enabled = false;
     }
-    protected override void ExitVehicle()
+
+    public override void ExitVehicle()
     {
-        currentDriver.GetComponentInChildren<WeaponController>().enabled = true;
+        currentDriver
+            .GetComponentInChildren<WeaponController>()
+            .enabled = true;
+
         base.ExitVehicle();
-        GetComponentInChildren<WeaponController>().enabled = false;
+
+        foreach (var weaponController in GetComponentsInChildren<WeaponController>())
+        {
+            weaponController.enabled = false;
+        }
     }
 }

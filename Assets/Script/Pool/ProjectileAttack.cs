@@ -13,7 +13,7 @@ public class ProjectileAttack : MonoBehaviour
     private List<Queue<ProjectileMovement>> projectilePools = new();
     [SerializeField] private int damageAmount = 1;
     [Header("Multi Shot")]
-    [SerializeField] private int bulletsPerShot = 1;
+    [SerializeField] private int bulletsPerShot = 1, startInitPoolSize = 10;
     [SerializeField] private float bulletAngleStep = 10f;
     public int DamageAmount => damageAmount;
     public bool IsProjectileActive => projectileHold != null;
@@ -28,7 +28,7 @@ public class ProjectileAttack : MonoBehaviour
         {
             Queue<ProjectileMovement> pool = new();
 
-            for (int j = 0; j < 30; j++)
+            for (int j = 0; j < startInitPoolSize; j++)
             {
                 GameObject obj = Instantiate(projectilePrefabs[i]);
                 obj.SetActive(false);

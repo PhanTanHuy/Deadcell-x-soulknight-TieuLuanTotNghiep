@@ -36,19 +36,20 @@ public class BulletElectric : ProjectileMovement
     [Header("Tia sét khi không có Enemy")]
     [SerializeField] private float minFallbackDistance = 1.5f;
     [SerializeField] private float maxFallbackDistance = 2.5f;
-
+    private float startWidth;
     private Coroutine shockRoutine;
 
     protected override void Awake()
     {
         base.Awake();
         lineRenderer = GetComponent<LineRenderer>();
+        startWidth = lineRenderer.startWidth;
     }
 
     private void OnEnable()
     {
         lineRenderer.positionCount = 0;
-        lineRenderer.startWidth = Random.Range(0.05f, 0.1f);
+        lineRenderer.startWidth = Random.Range(startWidth - 0.05f, startWidth + 0.1f);
 
         shockRoutine = StartCoroutine(DoShockChain());
     }

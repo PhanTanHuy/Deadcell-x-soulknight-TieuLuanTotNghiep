@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class BulletCircle : ProjectileMovement
+public class BulletEnemy : ProjectileMovement
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Player") || collision.CompareTag("Vehicle"))
         {
             HitBox hitBox = collision.GetComponent<HitBox>();
             hitBox.GetDame(damageAmountPlus + projectileAttack.DamageAmount);
