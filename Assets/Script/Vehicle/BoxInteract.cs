@@ -22,7 +22,11 @@ public class BoxInteract : MonoBehaviour
 
         Debug.Log("Player entered: " + gameObject.name);
     }
-
+    private void OnDisable()
+    {
+        inputActions.Player.Interact.performed -= OnInteractPerformed;
+        inputActions.Disable();
+    }
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!other.CompareTag("Player"))
@@ -64,4 +68,5 @@ public class BoxInteract : MonoBehaviour
 public interface IInteract
 {
     void Interact(Transform interactor);
+    void DisableInteract();
 }

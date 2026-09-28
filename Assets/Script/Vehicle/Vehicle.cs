@@ -16,12 +16,13 @@ public abstract class Vehicle : MonoBehaviour, IInteract
     protected Vector2 moveInput;
     protected Transform currentDriver;
     private HitBox hitBox;
+    private BoxInteract boxinteract;
     private bool isDriving;
 
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-
+        boxinteract = GetComponentInChildren<BoxInteract>();
         inputActions = new InputSystem_Actions();
         hitBox = GetComponent<HitBox>();
         hitBox.enabled = false;
@@ -173,7 +174,10 @@ public abstract class Vehicle : MonoBehaviour, IInteract
 
         Move();
     }
-
+    public void DisableInteract()
+    {
+        boxinteract.enabled = false;
+    }
     protected virtual void Move()
     {
         Vector2 direction = moveInput;

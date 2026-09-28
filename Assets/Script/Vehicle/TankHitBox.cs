@@ -15,11 +15,12 @@ public class TankHitBox : HitBox
         if (CanNotLifeAnymore())
         {
             tank.ExitVehicle();
-            foreach (BoxCollider2D box in GetComponentsInChildren<BoxCollider2D>())
+            foreach (Collider2D box in GetComponentsInChildren<Collider2D>())
             {
                 box.enabled = false;
             }
             tankDamaged.SetActive(true);
+            tank.DisableInteract();
         }
     }
 }
