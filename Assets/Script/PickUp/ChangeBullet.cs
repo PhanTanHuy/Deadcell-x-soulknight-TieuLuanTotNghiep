@@ -13,7 +13,7 @@ public class ChangeBullet : Item
     public float recoilDistance = 0.15f;
     public override void Pick(GameObject player)
     {
-        ProjectileAttack p = GetComponent<ProjectileAttack>();
+        ProjectileAttack p = player.GetComponent<ProjectileAttack>();
         p.ChangeProjectilePool(0, bulletPrefab, poolSize, bulletPerShot, shakeDuration, shakeMag);
         p.spriteWeapon.sprite = ItemSprite;
         UpgradeWeapon up = player.GetComponent<UpgradeWeapon>();

@@ -8,6 +8,8 @@ TagManager:
   - Item
   - Enemy
   - Vehicle
+  - BulletEnemy
+  - PlayerPartner
   layers:
   - Default
   - TransparentFX

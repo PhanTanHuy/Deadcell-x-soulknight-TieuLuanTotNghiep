@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3741132754488386488}
   m_Layer: 0
   m_Name: BulletWave
-  m_TagString: AttackBox
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -153,3 +153,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BulletWave
   speed: 5
   stoppingDistance: 1.5
+  damageAmountPlus: 1
+  projectileAttack: {fileID: 0}

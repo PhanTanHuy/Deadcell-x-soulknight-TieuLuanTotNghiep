@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -36902737112253309}
   m_Layer: 0
   m_Name: BulletElectric
-  m_TagString: AttackBox
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -80,7 +80,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1677082717
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
@@ -139,7 +139,7 @@ LineRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1677082717
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Positions:
@@ -217,6 +217,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BulletElectric
   speed: 0
   stoppingDistance: 1.5
+  damageAmountPlus: 1
+  projectileAttack: {fileID: 0}
   radius: 5
   maxChainTargets: 5
   chainDelay: 0.1

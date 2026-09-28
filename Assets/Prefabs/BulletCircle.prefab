@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8250548997448399367}
   m_Layer: 0
   m_Name: BulletCircle
-  m_TagString: AttackBox
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -145,4 +145,3 @@ MonoBehaviour:
   stoppingDistance: 1.5
   damageAmountPlus: 1
   projectileAttack: {fileID: 0}
-  hitEnemy: 1

@@ -19,7 +19,7 @@ public class ProjectileAttack : MonoBehaviour
 
     public int DamageAmount => damageAmount;
     public bool IsProjectileActive => projectileHold != null;
-    private float shakeDuration = 0f, shakeMag = 0f;
+    [SerializeField] private float shakeDuration = 0f, shakeMag = 0f;
     protected virtual void Start()
     {
         InitializePools();

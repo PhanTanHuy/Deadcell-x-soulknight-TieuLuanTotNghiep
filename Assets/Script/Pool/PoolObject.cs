@@ -124,7 +124,7 @@ public class PoolObject : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         obj.SetActive(false);
-        if (obj.transform.parent != null) obj.transform.parent = null;
+        if (obj.transform.parent != null) obj.transform.SetParent(null);
     }
     public void ReturnToPool(GameObject obj, VFXType type)
     {

@@ -23,7 +23,7 @@ public class MouseHitBox : HitBox
         }
 
         // Trừ máu
-        ShakeCam.Instance.Shake(0.2f, 0.2f);
+        ShakeCam.Instance.Shake(0.2f, 1f);
 
         if (maxHealth <= 0)
         {

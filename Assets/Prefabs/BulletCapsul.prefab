@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2988273591974921347}
   m_Layer: 0
   m_Name: BulletCapsul
-  m_TagString: AttackBox
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
