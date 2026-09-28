@@ -8089,7 +8089,8 @@ MonoBehaviour:
   recoilDistance: 0.15
   recoilDuration: 0.2
   fireHold: 0
-  detectionRadius: 8
+  spritePlayer: {fileID: 1849783862}
+  detectionRadius: 12
   targetLayer:
     serializedVersion: 2
     m_Bits: 64

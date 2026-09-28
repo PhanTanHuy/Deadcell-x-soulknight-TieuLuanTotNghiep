@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 public class PlayerWeaponController : WeaponController
 {
     [Header("Player")]
-    [SerializeField] private Transform spritePlayer;
 
     private InputSystem_Actions inputActions;
     private Camera mainCamera;
@@ -54,7 +53,7 @@ public class PlayerWeaponController : WeaponController
     protected override void Update()
     {
         RotateWeaponsTowardsMouse();
-        RotatePlayerToWeapon();
+        RotateHolderToWeapon();
 
         HandleFire();
     }
@@ -77,13 +76,7 @@ public class PlayerWeaponController : WeaponController
         AimAtPosition(worldMousePosition);
     }
 
-    private void RotatePlayerToWeapon()
-    {
-        if (spritePlayer == null)
-            return;
-
-        spritePlayer.localScale = directionToTarget.x < 0f ? FlipScale : NormalScale;
-    }
+    
 
     //========================================================
     // FIRE

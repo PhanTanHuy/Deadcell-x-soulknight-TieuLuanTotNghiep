@@ -24,10 +24,11 @@ public abstract class WeaponController : MonoBehaviour
     [SerializeField] protected bool fireHold;
 
     protected float fireTimer;
-    protected Vector2 directionToTarget;
+    protected Vector2 directionToTarget, currentDirectionToTarget;
 
     protected Vector3[] spriteOriginalLocalPositions;
     protected Coroutine[] recoilCoroutines;
+    [SerializeField] private Transform spritePlayer;
 
     protected static readonly Vector3 NormalScale = Vector3.one;
     protected static readonly Vector3 FlipScale = new Vector3(-1f, 1f, 1f);
@@ -108,15 +109,21 @@ public abstract class WeaponController : MonoBehaviour
     //========================================================
     // AIM
     //========================================================
+    protected void RotateHolderToWeapon()
+    {
+        if (spritePlayer == null)
+            return;
 
+        spritePlayer.localScale = directionToTarget.x < 0f ? FlipScale : NormalScale;
+    }
     protected virtual void AimAtPosition(Vector3 targetPosition)
     {
         directionToTarget = targetPosition - transform.position;
-
+        currentDirectionToTarget = Vector2.Lerp(currentDirectionToTarget, directionToTarget, 0.15f);
         if (directionToTarget.sqrMagnitude <= 0.001f)
             return;
 
-        float angle = Mathf.Atan2(directionToTarget.y, directionToTarget.x) * Mathf.Rad2Deg - 90f;
+        float angle = Mathf.Atan2(currentDirectionToTarget.y, currentDirectionToTarget.x) * Mathf.Rad2Deg - 90f;
         Quaternion targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
         if (rotationMode == WeaponRotationMode.SharedRotation)

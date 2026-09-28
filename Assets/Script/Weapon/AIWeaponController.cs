@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CircleCollider2D))]
@@ -33,6 +33,7 @@ public class AIWeaponController : WeaponController
         }
 
         AimAtTarget();
+        RotateHolderToWeapon();
 
         HandleFire();
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class BulletMinato : ProjectileMovement
 {
-    private PlayerBuff playerBuff;
+    private CharacterBuff playerBuff;
 
     private Coroutine stopCoroutine;
     [SerializeField] private float stopDuration = 0.15f, dashDuration = 0.35f;
@@ -11,7 +11,7 @@ public class BulletMinato : ProjectileMovement
     {
         base.Awake();
 
-        playerBuff = projectileAttack.attacker.GetComponent<PlayerBuff>();
+        playerBuff = projectileAttack.attacker.GetComponent<CharacterBuff>();
     }
 
     private void OnEnable()

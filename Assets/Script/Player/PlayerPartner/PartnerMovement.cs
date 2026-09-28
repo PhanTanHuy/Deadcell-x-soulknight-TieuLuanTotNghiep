@@ -1,7 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-public class PartnerMovement : MonoBehaviour
+public class PartnerMovement : CharacterMovement
 {
     [Header("Target")]
     [SerializeField] private Transform player;
@@ -18,31 +17,25 @@ public class PartnerMovement : MonoBehaviour
     [SerializeField] private float offsetChangeMinTime = 1.5f;
     [SerializeField] private float offsetChangeMaxTime = 3f;
 
-    [Header("Rotation")]
-    [SerializeField] private Transform sprite;
-
-    private Rigidbody2D rb;
-
     private Vector2 currentDirection;
     private Vector2 randomOffset;
 
     private float offsetTimer;
     private float nextOffsetChangeTime;
 
-    private void Awake()
+    protected override void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        base.Awake();
 
         ChooseRandomOffset();
     }
 
-    private void FixedUpdate()
+    protected override void Move()
     {
         if (player == null)
             return;
 
         UpdateRandomOffset();
-
         MoveTowardsPlayer();
     }
 
@@ -105,10 +98,7 @@ public class PartnerMovement : MonoBehaviour
         Vector2 movement = currentDirection * currentSpeed * Time.fixedDeltaTime;
 
         rb.MovePosition(rb.position + movement);
-
     }
-
-    
 
     public void SetPlayer(Transform target)
     {

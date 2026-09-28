@@ -1,21 +1,24 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerBuff : BuffOnSelf
+public class CharacterBuff : BuffOnSelf
 {
+    private CharacterMovement characterMovement;
     private Rigidbody2D rb;
-    private PlayerController playerController;
 
     private Coroutine dashCoroutine;
 
-    private void Start()
+    private void Awake()
     {
-        playerController = GetComponent<PlayerController>();
+        characterMovement = GetComponent<CharacterMovement>();
         rb = GetComponent<Rigidbody2D>();
     }
 
     public override void DashBuff(Vector2 targetPosition, float time)
     {
+        if (characterMovement == null)
+            return;
+
         if (dashCoroutine != null)
         {
             StopCoroutine(dashCoroutine);
@@ -31,7 +34,13 @@ public class PlayerBuff : BuffOnSelf
         float time
     )
     {
-        playerController.SetTimeForBuff(time);
+        if (time <= 0f)
+        {
+            rb.MovePosition(targetPosition);
+            yield break;
+        }
+
+        characterMovement.SetTimeForBuff(time);
 
         rb.linearVelocity = Vector2.zero;
 
@@ -65,8 +74,23 @@ public class PlayerBuff : BuffOnSelf
 
     public override void TeleportBuff(Vector2 position)
     {
+        if (rb == null)
+            return;
+
+        rb.position = position;
+        rb.linearVelocity = Vector2.zero;
+
         Debug.Log(
-            $"Player Teleport Buff: Position = {position}"
+            $"{gameObject.name} Teleport Buff: Position = {position}"
         );
+    }
+
+    private void OnDisable()
+    {
+        if (dashCoroutine != null)
+        {
+            StopCoroutine(dashCoroutine);
+            dashCoroutine = null;
+        }
     }
 }
