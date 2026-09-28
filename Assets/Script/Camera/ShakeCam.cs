@@ -55,7 +55,7 @@ public class ShakeCam : MonoBehaviour
     /// </summary>
     /// <param name="duration">Thời gian rung (giây)</param>
     /// <param name="magnitude">Biên độ (độ dịch chuyển tối đa)</param>
-    public void Shake(float duration, float magnitude)
+    public void Shake(float duration = 0.2f, float magnitude = 0.2f)
     {
         if (magnitude < lastMagnitude) return;
         lastMagnitude = magnitude;

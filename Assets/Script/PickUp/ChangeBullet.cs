@@ -8,11 +8,18 @@ public class ChangeBullet : Item
     public bool isHoldShoot = false;
     public int poolSize = 10; // The size of the projectile pool
     public int bulletPerShot = 1; // The number of bullets to shoot per shot
+    public float shakeDuration;
+    public float shakeMag;
+    public float recoilDistance = 0.15f;
     public override void Pick(GameObject player)
     {
-        player.GetComponent<ProjectileAttack>().ChangeProjectilePool(0, bulletPrefab, poolSize, bulletPerShot);
-        player.GetComponent<ProjectileAttack>().spriteWeapon.sprite = ItemSprite;
-        player.GetComponent<UpgradeWeapon>().ChangeShootSpeed(speedTime);
-        player.GetComponent<UpgradeWeapon>().ChangeFireHold(isHoldShoot);
+        ProjectileAttack p = GetComponent<ProjectileAttack>();
+        p.ChangeProjectilePool(0, bulletPrefab, poolSize, bulletPerShot, shakeDuration, shakeMag);
+        p.spriteWeapon.sprite = ItemSprite;
+        UpgradeWeapon up = player.GetComponent<UpgradeWeapon>();
+        up.ChangeShootSpeed(speedTime);
+        up.ChangeFireHold(isHoldShoot);
+        up.ChangeRecoilDistance(recoilDistance);
+
     }
 }

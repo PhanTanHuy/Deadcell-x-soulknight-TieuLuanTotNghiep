@@ -32,4 +32,8 @@ public class UpgradeWeapon : MonoBehaviour
     {
         weaponController.ChangeHoldShoot(b);
     }
+    public void ChangeRecoilDistance(float rcd)
+    {
+        weaponController.recoilDistance = rcd;
+    }
 }
