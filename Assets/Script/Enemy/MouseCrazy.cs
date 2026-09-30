@@ -81,15 +81,5 @@ public class MouseCrazy : MouseAI
         rb.linearVelocity = crazyDirection *  chaseData.crazyChaseSpeed;
     }
 
-    protected override void OnDrawGizmosSelected()
-    {
-        base.OnDrawGizmosSelected();
-
-        // V? vòng tròn detection cho ch? ?? crazy
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(
-            transform.position,
-            chaseData.crazyDetectionRadius
-        );
-    }
+   
 }

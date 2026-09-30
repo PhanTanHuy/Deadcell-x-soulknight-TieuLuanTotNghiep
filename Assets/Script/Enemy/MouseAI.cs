@@ -148,8 +148,8 @@ public abstract class MouseAI : MonoBehaviour
             direction.x
         ) * Mathf.Rad2Deg;
 
-        transform.rotation =
-            Quaternion.Euler(0f, 0f, angle);
+        //transform.rotation =
+        //    Quaternion.Euler(0f, 0f, angle);
     }
 
     protected virtual void ChooseRandomDirection()

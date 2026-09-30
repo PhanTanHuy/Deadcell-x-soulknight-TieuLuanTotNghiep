@@ -17,4 +17,4 @@ MonoBehaviour:
   fireCooldown: 1
   aimThreshold: 20
   holdDelay: 1
-  patternData: {fileID: 0}
+  patternData: {fileID: 11400000, guid: fb4e39ec41f26ed4097778ba85a1fc6f, type: 2}

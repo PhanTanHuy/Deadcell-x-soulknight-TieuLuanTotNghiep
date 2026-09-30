@@ -385,7 +385,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FanObject
   orbitCenter: {fileID: 0}
-  radius: 1
+  radius: 3
   rotationSpeed: 2000
   rotateClockwise: 1
   radiusAttack: 3

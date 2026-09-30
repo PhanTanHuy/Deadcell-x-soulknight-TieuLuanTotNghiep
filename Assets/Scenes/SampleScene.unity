@@ -2392,7 +2392,7 @@ MonoBehaviour:
     size: 1
   - type: 9
     prefab: {fileID: 8645607065671780153, guid: 7e335d9713d62c040b825fd6780d9a04, type: 3}
-    size: 1
+    size: 10
   - type: 2
     prefab: {fileID: 5996162267212047542, guid: dc173018777481a40accb2665f622771, type: 3}
     size: 5
@@ -14865,6 +14865,7 @@ MonoBehaviour:
   mousePrefabs:
   - {fileID: 3712095629813765145, guid: 48fb975be07a17d4d94e8fbc9c7850bd, type: 3}
   - {fileID: 3712095629813765145, guid: b8328098daec8484e89a4c1ab1f0079b, type: 3}
+  - {fileID: 3712095629813765145, guid: ed708c0958c9e6840b47f02972550708, type: 3}
   poolSizePerType: 10
   mouseHoles:
   - {fileID: 219390444}
@@ -14872,8 +14873,8 @@ MonoBehaviour:
   - {fileID: 2071251680}
   - {fileID: 863937018}
   spawnInterval: 0.5
-  maxMouseInRoom: 20
-  maxActiveMouse: 20
+  maxMouseInRoom: 30
+  maxActiveMouse: 30
   minMousePerSpawn: 3
   maxMousePerSpawn: 5
 --- !u!1 &1634792191
@@ -15192,7 +15193,6 @@ MonoBehaviour:
   randomOffsetRadius: 0.7
   offsetChangeMinTime: 1.5
   offsetChangeMaxTime: 3
-  sprite: {fileID: 1849783862}
 --- !u!1 &1669197016
 GameObject:
   m_ObjectHideFlags: 0
