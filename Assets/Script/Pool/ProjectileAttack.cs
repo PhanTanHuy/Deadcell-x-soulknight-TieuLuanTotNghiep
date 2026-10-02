@@ -20,6 +20,7 @@ public class ProjectileAttack : MonoBehaviour
     public int DamageAmount => damageAmount;
     public bool IsProjectileActive => projectileHold != null;
     [SerializeField] private float shakeDuration = 0f, shakeMag = 0f;
+    [SerializeField] private WeaponController weaponController;
     protected virtual void Start()
     {
         InitializePools();
@@ -192,5 +193,9 @@ public class ProjectileAttack : MonoBehaviour
 
             projectile.transform.localScale = newScale;
         }
+    }
+    public Vector2 GetDirection()
+    {
+        return weaponController.GetCurrentDirectionToTarget();
     }
 }

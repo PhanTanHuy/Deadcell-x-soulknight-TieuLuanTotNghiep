@@ -12,7 +12,6 @@ public class BulletLaze : ProjectileMovement
     [SerializeField] private LayerMask collisionLayer;
 
     private LineRenderer lineRenderer;
-    private Camera mainCamera;
 
     private float nextDamageTime;
 
@@ -21,7 +20,6 @@ public class BulletLaze : ProjectileMovement
         base.Awake();
 
         lineRenderer = GetComponent<LineRenderer>();
-        mainCamera = Camera.main;
 
         lineRenderer.positionCount = 2;
     }
@@ -44,7 +42,7 @@ public class BulletLaze : ProjectileMovement
 
     private void UpdateLaser()
     {
-        if (shootPos == null || mainCamera == null)
+        if (shootPos == null)
             return;
 
         Vector3 startPosition = shootPos.position;
@@ -52,14 +50,9 @@ public class BulletLaze : ProjectileMovement
         Vector3 mouseScreenPosition =
             Mouse.current.position.ReadValue();
 
-        mouseScreenPosition.z =
-            Mathf.Abs(mainCamera.transform.position.z - startPosition.z);
-
-        Vector3 mouseWorldPosition =
-            mainCamera.ScreenToWorldPoint(mouseScreenPosition);
 
         Vector2 direction =
-            mouseWorldPosition - startPosition;
+            projectileAttack.GetDirection();
 
         if (direction.sqrMagnitude <= 0.001f)
             return;

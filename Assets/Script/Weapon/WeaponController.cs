@@ -81,7 +81,7 @@ public abstract class WeaponController : MonoBehaviour
         fireTimer = 0f;
 
         if (!fireHold)
-            Fire(directionToTarget);
+            Fire(currentDirectionToTarget);
     }
 
     protected virtual void Fire(Vector2 direction)
@@ -292,5 +292,9 @@ public abstract class WeaponController : MonoBehaviour
     public ProjectileAttack GetProjectileAttack()
     {
         return projectileAttack;
+    }
+    public Vector2 GetCurrentDirectionToTarget()
+    {
+        return currentDirectionToTarget;
     }
 }
